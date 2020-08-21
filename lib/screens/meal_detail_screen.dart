@@ -73,15 +73,22 @@ class MealDetailScreen extends StatelessWidget {
                 width: 300,
                 child: ListView.builder(
                     itemBuilder: (ctx, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          child: Text(
-                            (index + 1).toString(),
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              child: Text(
+                                (index + 1).toString(),
+                              ),
+                            ),
+                            title: Text(
+                              selectedMeal.steps[index],
+                            ),
                           ),
-                        ),
-                        title: Text(
-                          selectedMeal.steps[index],
-                        ),
+                          Divider(
+                            thickness: 2,
+                          ),
+                        ],
                       );
                     },
                     itemCount: selectedMeal.steps.length),
