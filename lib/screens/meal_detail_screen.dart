@@ -5,6 +5,9 @@ import '../models/meal.dart';
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/meal-detail';
 
+  final Function toggleFavorite;
+  final Function isFavorited;
+  MealDetailScreen(this.toggleFavorite, this.isFavorited);
   Widget buildSectionTitle(String title, BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -20,82 +23,89 @@ class MealDetailScreen extends StatelessWidget {
     final id = ModalRoute.of(context).settings.arguments as String;
     Meal selectedMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == id);
     return Scaffold(
-        appBar: AppBar(title: Text(selectedMeal.title)),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  selectedMeal.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+      appBar: AppBar(title: Text(selectedMeal.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(
+                selectedMeal.imageUrl,
+                fit: BoxFit.cover,
               ),
-              buildSectionTitle('Ingredients', context),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
+            ),
+            buildSectionTitle('Ingredients', context),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.grey,
                 ),
-                height: 200,
-                width: 300,
-                child: ListView.builder(
-                    itemBuilder: (ctx, index) {
-                      return Card(
-                        elevation: 3,
-                        color: Theme.of(context).accentColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            selectedMeal.ingredients[index],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 200,
+              width: 300,
+              child: ListView.builder(
+                  itemBuilder: (ctx, index) {
+                    return Card(
+                      elevation: 3,
+                      color: Theme.of(context).accentColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          selectedMeal.ingredients[index],
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: selectedMeal.ingredients.length),
+            ),
+            buildSectionTitle('Steps', context),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 200,
+              width: 300,
+              child: ListView.builder(
+                  itemBuilder: (ctx, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            child: Text(
+                              (index + 1).toString(),
+                            ),
+                          ),
+                          title: Text(
+                            selectedMeal.steps[index],
                           ),
                         ),
-                      );
-                    },
-                    itemCount: selectedMeal.ingredients.length),
-              ),
-              buildSectionTitle('Steps', context),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                height: 200,
-                width: 300,
-                child: ListView.builder(
-                    itemBuilder: (ctx, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              child: Text(
-                                (index + 1).toString(),
-                              ),
-                            ),
-                            title: Text(
-                              selectedMeal.steps[index],
-                            ),
-                          ),
-                          Divider(
-                            thickness: 2,
-                          ),
-                        ],
-                      );
-                    },
-                    itemCount: selectedMeal.steps.length),
-              ),
-              Padding(padding: EdgeInsets.all(10))
-            ],
-          ),
-        ));
+                        Divider(
+                          thickness: 2,
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: selectedMeal.steps.length),
+            ),
+            Padding(padding: EdgeInsets.all(10))
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          isFavorited(id) ? Icons.star : Icons.star_border,
+        ),
+        onPressed: () => toggleFavorite(id),
+      ),
+    );
   }
 }
